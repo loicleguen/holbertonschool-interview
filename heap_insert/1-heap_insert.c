@@ -18,13 +18,14 @@ void swap_values(heap_t *a, heap_t *b)
  * heapify_up - Move the node up to maintain heap property
  * @node: pointer to the node to heapify
  */
-void heapify_up(heap_t *node)
+heap_t *heapify_up(heap_t *node)
 {
 	while (node->parent && node->n > node->parent->n)
 	{
 		swap_values(node, node->parent);
 		node = node->parent;
 	}
+	return (node);
 }
 
 /**
@@ -70,7 +71,7 @@ heap_t *heap_insert(heap_t **root, int value)
 	else
 		parent->right = new_node;
 
-	heapify_up(new_node);
+	new_node = heapify_up(new_node);
 
 	return (new_node);
 }
