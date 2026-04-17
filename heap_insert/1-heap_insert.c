@@ -17,6 +17,7 @@ void swap_values(heap_t *a, heap_t *b)
 /**
  * heapify_up - Move the node up to maintain heap property
  * @node: pointer to the node to heapify
+ * Return: pointer to the final position of the node
  */
 heap_t *heapify_up(heap_t *node)
 {
