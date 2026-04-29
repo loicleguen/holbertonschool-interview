@@ -2,6 +2,7 @@
 #include <stdio.h>
 
 static int is_stable(int grid[3][3])
+// Vérifie si la grille est stable (tous les éléments <= 3)
 {
 	int i, j;
 
@@ -13,6 +14,7 @@ static int is_stable(int grid[3][3])
 }
 
 static void print_grid(int grid[3][3])
+// Affiche la grille au format demandé
 {
 	int i, j;
 
@@ -29,6 +31,7 @@ static void print_grid(int grid[3][3])
 }
 
 void sandpiles_sum(int grid1[3][3], int grid2[3][3])
+// Calcule la somme des deux grilles et stabilise le résultat
 {
 	int i, j;
 	int copy[3][3];
