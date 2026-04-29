@@ -1,13 +1,13 @@
 #include "sandpiles.h"
 #include <stdio.h>
 
-static int is_stable(int grid[3][3])
 /**
  * is_stable - Check if a sandpile grid is stable
  * @grid: 3x3 grid to check
  *
  * Return: 1 if stable, 0 otherwise
  */
+static int is_stable(int grid[3][3])
 {
 	int i, j;
 
@@ -18,13 +18,13 @@ static int is_stable(int grid[3][3])
 	return (1);
 }
 
-static void print_grid(int grid[3][3])
 /**
  * print_grid - Print a 3x3 grid
  * @grid: 3x3 grid to print
  *
  * Return: Nothing
  */
+static void print_grid(int grid[3][3])
 {
 	int i, j;
 
@@ -40,7 +40,6 @@ static void print_grid(int grid[3][3])
 	}
 }
 
-void sandpiles_sum(int grid1[3][3], int grid2[3][3])
 /**
  * sandpiles_sum - Compute the sum of two sandpiles
  * @grid1: Left 3x3 grid, updated in place
@@ -48,6 +47,7 @@ void sandpiles_sum(int grid1[3][3], int grid2[3][3])
  *
  * Return: Nothing
  */
+void sandpiles_sum(int grid1[3][3], int grid2[3][3])
 {
 	int i, j;
 	int copy[3][3];
