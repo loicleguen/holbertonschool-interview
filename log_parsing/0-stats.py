@@ -1,58 +1,69 @@
 #!/usr/bin/python3
-"""Log parsing script."""
-
-import re
+"""
+Module pour parser des logs en temps réel depuis stdin.
+Affiche les statistiques toutes les 10 lignes ou lors d'un Ctrl+C.
+"""
 import sys
 
 
-STATUS_CODES = (200, 301, 400, 401, 403, 404, 405, 500)
-LOG_PATTERN = re.compile(
-    r"^(\d{1,3}(?:\.\d{1,3}){3}) - "
-    r"\[(.*?)\] "
-    r'"GET /projects/260 HTTP/1\.1" '
-    r"(\d{3}) "
-    r"(\d+)$"
-)
-
-
-def print_stats(total_size, status_count):
-    """Print the accumulated statistics."""
+def print_stats(total_size, status_codes):
+    """
+    Affiche les statistiques au format demandé.
+    """
     print("File size: {}".format(total_size))
-    for code in STATUS_CODES:
-        count = status_count.get(code)
-        if count:
-            print("{}: {}".format(code, count))
+    for code in sorted(status_codes.keys()):
+        if status_codes[code] > 0:
+            print("{}: {}".format(code, status_codes[code]))
 
 
-def main():
-    """Read stdin and print stats every 10 lines and on interrupt."""
+def parse_logs():
+    """
+    Lit stdin ligne par ligne et traite les données.
+    """
     total_size = 0
+    # Liste des codes autorisés initialisés à 0
+    status_codes = {
+        "200": 0, "301": 0, "400": 0, "401": 0,
+        "403": 0, "404": 0, "405": 0, "500": 0
+    }
     line_count = 0
-    status_count = {}
 
     try:
         for line in sys.stdin:
             line_count += 1
-            match = LOG_PATTERN.match(line.strip())
-            if not match:
-                if line_count % 10 == 0:
-                    print_stats(total_size, status_count)
-                continue
+            # Séparer la ligne par les espaces depuis la fin
+            # Format attendu : ... "GET /projects/260 HTTP/1.1" <status> <size>
+            parts = line.split()
 
-            status = int(match.group(3))
-            file_size = int(match.group(4))
+            # On vérifie qu'on a assez d'éléments pour extraire code et taille
+            if len(parts) >= 2:
+                # La taille est le dernier élément, le code est l'avant-dernier
+                status = parts[-2]
+                size = parts[-1]
 
-            total_size += file_size
-            if status in STATUS_CODES:
-                status_count[status] = status_count.get(status, 0) + 1
+                # Accumulation de la taille si c'est un entier valide
+                try:
+                    total_size += int(size)
+                except ValueError:
+                    pass
 
+                # Incrémentation du code de statut s'il fait partie de la liste
+                if status in status_codes:
+                    status_codes[status] += 1
+
+            # Affichage toutes les 10 lignes
             if line_count % 10 == 0:
-                print_stats(total_size, status_count)
+                print_stats(total_size, status_codes)
+
+        # Si le flux stdin se termine proprement sans interruption
+        print_stats(total_size, status_codes)
 
     except KeyboardInterrupt:
-        print_stats(total_size, status_count)
+        # Gestion du Ctrl + C : on affiche les stats courantes puis on lève à nouveau l'exception
+        print_stats(total_size, status_codes)
         raise
 
 
 if __name__ == "__main__":
-    main()
+    parse_logs()
+    
