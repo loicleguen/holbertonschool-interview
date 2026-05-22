@@ -59,11 +59,11 @@ def parse_logs():
         print_stats(total_size, status_codes)
 
     except KeyboardInterrupt:
-        # Gestion du Ctrl + C : on affiche les stats courantes puis on lève à nouveau l'exception
+        # Gestion du Ctrl + C : on affiche les stats
+        # courantes puis on lève à nouveau l'exception
         print_stats(total_size, status_codes)
         raise
 
 
 if __name__ == "__main__":
     parse_logs()
-    
