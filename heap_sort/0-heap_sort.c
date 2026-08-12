@@ -9,11 +9,13 @@
  */
 void swap_ints(int *array, size_t size, int *a, int *b)
 {
-	if (*a != *b)
+	int tmp;
+
+	if (a != b)
 	{
-		*a = *a ^ *b;
-		*b = *a ^ *b;
-		*a = *a ^ *b;
+		tmp = *a;
+		*a = *b;
+		*b = tmp;
 		print_array(array, size);
 	}
 }
@@ -57,11 +59,11 @@ void heap_sort(int *array, size_t size)
 	if (!array || size < 2)
 		return;
 
-	/* 1. Build Max Heap (bottom-up using sift-down) */
+	/* 1. Build Max Heap */
 	for (i = (size / 2) - 1; i >= 0; i--)
 		sift_down(array, size, size, i);
 
-	/* 2. Extract elements from the heap one by one */
+	/* 2. Extract elements from the heap */
 	for (i = size - 1; i > 0; i--)
 	{
 		swap_ints(array, size, &array[0], &array[i]);
