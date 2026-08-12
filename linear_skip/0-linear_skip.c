@@ -9,51 +9,40 @@
  */
 skiplist_t *linear_skip(skiplist_t *list, int value)
 {
-	skiplist_t *node = list, *stop = NULL;
+	skiplist_t *node = list, *express = NULL;
 
-	if (list == NULL)
+	if (!list)
 		return (NULL);
 
-	/* Step 1: Traverse the express lane */
-	while (node->express != NULL)
+	while (node->express)
 	{
-		node = node->express;
-		printf("Value checked at index [%lu] = [%d]\n", node->index, node->n);
-		if (node->n >= value)
+		express = node->express;
+		printf("Value checked at index [%lu] = [%d]\n", express->index, express->n);
+		if (express->n >= value)
 			break;
+		node = express;
 	}
 
-	/* Step 2: Determine search range limits */
-	if (node->n < value)
-	{
-		stop = node;
-		while (stop->next != NULL)
-			stop = stop->next;
-
-		/* If we reached the end of express lane */
-		/* node points to the last express node reached */
-		/* The search range is between last express node and last list node */
+	if (express && express->n >= value)
 		printf("Value found between indexes [%lu] and [%lu]\n",
-		       node->index, stop->index);
-	}
+		       node->index, express->index);
 	else
 	{
-		/* Find previous express node or start at head */
-		stop = node;
-		node = list;
-		while (node->express != stop && node->express != NULL)
-			node = node->express;
-
+		node = express ? express : list;
+		express = node;
+		while (express->next)
+			express = express->next;
 		printf("Value found between indexes [%lu] and [%lu]\n",
-		       node->index, stop->index);
+		       node->index, express->index);
 	}
 
-	/* Step 3: Linear search between node and stop */
-	while (node != NULL && node->index <= stop->index)
+	while (node)
 	{
 		printf("Value checked at index [%lu] = [%d]\n", node->index, node->n);
 		if (node->n == value)
 			return (node);
+		if (node == express)
+			break;
 		node = node->next;
 	}
 
