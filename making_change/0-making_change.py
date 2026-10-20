@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-Module pour le calcul du nombre minimum de pieces pour atteindre un total.
+Module pour déterminer le nombre minimum de pièces requis.
 """
 
 
@@ -9,27 +9,23 @@ def makeChange(coins, total):
     Calcule le nombre minimum de pieces necessaires pour atteindre total.
 
     Args:
-        coins (list): Liste des valeurs des pieces disponibles.
-        total (int): Montant cible a atteindre.
+        coins (list): Liste des valeurs des pièces à disposition.
+        total (int): Somme totale à atteindre.
 
     Returns:
-        int: Nombre minimum de pieces, 0 si total <= 0, ou -1 si impossible.
+        int: Nombre minimum de pièces nécessaires, 0 si total <= 0,
+             ou -1 si le total ne peut pas être atteint.
     """
     if total <= 0:
         return 0
 
-    # Tri décroissant des pièces
-    coins.sort(reverse=True)
+    # Tableau DP initialisé avec une valeur impossible (total + 1)
+    dp = [total + 1] * (total + 1)
+    dp[0] = 0
 
-    count = 0
-    for coin in coins:
-        if total <= 0:
-            break
-        num_coins = total // coin
-        count += num_coins
-        total -= num_coins * coin
+    for i in range(1, total + 1):
+        for coin in coins:
+            if i - coin >= 0:
+                dp[i] = min(dp[i], dp[i - coin] + 1)
 
-    if total != 0:
-        return -1
-
-    return count
+    return dp[total] if dp[total] != total + 1 else -1
